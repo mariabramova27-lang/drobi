@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дроби — Тренажёр (6 уровней Блума)</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #0a0e1a; --card: #1a2233; --text: #e8edf7; --dim: #8892a8;
+  --cyan: #00d4ff; --purple: #a855f7; --pink: #ec4899;
+  --mint: #10b981; --gold: #fbbf24; --coral: #ef4444;
+  --blue: #3b82f6;
+}
+html, body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.6; overflow-x: hidden;
+}
+
+/* ============================================================
+   ФОНОВАЯ РЕКЛАМА
+   ============================================================ */
+.bg-ad-container {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+.bg-ad {
+  position: absolute; padding: 14px 20px;
+  border-radius: 16px;
+  background: rgba(26, 34, 51, 0.35);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(0, 212, 255, 0.15);
+  font-size: 12px; font-weight: 700;
+  color: rgba(232, 237, 247, 0.5);
+  max-width: 240px; line-height: 1.5;
+  pointer-events: none;
+  animation: floatAd 12s ease-in-out infinite;
+}
+.bg-ad .ad-icon {
+  font-size: 22px; display: block;
+  margin-bottom: 4px; opacity: 0.7;
+}
+.bg-ad .ad-text strong {
+  color: rgba(0, 212, 255, 0.7); font-weight: 900;
+}
+.bg-ad-1 { top: 8%; left: 2%; }
+.bg-ad-2 { top: 55%; left: 3%; animation-delay: 2s; }
+.bg-ad-3 { top: 20%; right: 2%; animation-delay: 4s; }
+.bg-ad-4 { bottom: 15%; right: 3%; animation-delay: 6s; }
+@keyframes floatAd {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+@media (max-width: 950px) { .bg-ad { display: none; } }
+
+/* ============================================================
+   ТИКЕР
+   ============================================================ */
+.ticker {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), rgba(168, 85, 247, 0.15));
+  border-top: 2px solid rgba(0, 212, 255, 0.3);
+  backdrop-filter: blur(10px);
+  z-index: 50; overflow: hidden;
+  display: flex; align-items: center;
+}
+.ticker-content {
+  display: inline-flex; align-items: center; gap: 36px;
+  white-space: nowrap;
+  animation: tickerScroll 45s linear infinite;
+  padding-left: 100%;
+}
+.ticker-content a {
+  color: var(--gold); font-weight: 900;
+  text-decoration: none; font-size: 12px;
+  letter-spacing: 0.5px; pointer-events: auto;
+}
+.ticker-content a:hover { color: #fff; text-shadow: 0 0 10px var(--gold); }
+.ticker-content span { color: var(--dim); font-size: 12px; font-weight: 700; }
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+body::before {
+  content: ""; position: fixed; inset: 0;
+  background: radial-gradient(circle at 20% 10%, rgba(0, 212, 255, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 80% 90%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: ""; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px; pointer-events: none; z-index: 0;
+}
+.container {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 16px 16px 60px 16px;
+}
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 16px 20px; margin-bottom: 16px;
+  background: rgba(26, 34, 51, 0.95);
+  border: 2px solid rgba(0, 212, 255, 0.4);
+  border-radius: 20px; flex-wrap: wrap;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-icon { font-size: 40px; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.header-title {
+  font-size: clamp(16px, 3vw, 22px); font-weight: 900;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header-sub { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+.header-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255, 255, 255, 0.05); padding: 6px 12px;
+  border-radius: 30px; border: 1px solid rgba(0, 212, 255, 0.3);
+  font-size: 13px; font-weight: 800;
+}
+.stat .value { color: var(--gold); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.hero {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(168, 85, 247, 0.1));
+  border: 2px solid var(--cyan); border-radius: 24px;
+  padding: 24px; margin-bottom: 20px; text-align: center;
+}
+.hero h1 {
+  font-size: clamp(24px, 5vw, 36px); font-weight: 900;
+  background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+  background-size: 200% 200%; -webkit-background-clip: text;
+  background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s ease infinite; margin-bottom: 8px;
+}
+@keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.hero p { color: var(--dim); font-size: 14px; }
+.hero-stats {
+  display: flex; gap: 12px; justify-content: center;
+  flex-wrap: wrap; margin-top: 16px;
+}
+.hero-stat {
+  background: rgba(26, 34, 51, 0.95);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 14px; padding: 10px 18px; min-width: 100px;
+}
+.hero-stat .num { font-size: 24px; font-weight: 900; color: var(--gold); }
+.hero-stat .lbl {
+  font-size: 10px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 800;
+}
+
+/* РЕКЛАМНЫЙ БЛОК В МЕНЮ */
+.promo-block {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(236, 72, 153, 0.1));
+  border: 2px dashed var(--gold);
+  border-radius: 20px; padding: 20px;
+  margin-bottom: 20px; text-align: center;
+}
+.promo-block h3 {
+  color: var(--gold); font-size: 16px;
+  margin-bottom: 8px; font-weight: 900;
+}
+.promo-block p {
+  color: var(--text); font-size: 13px;
+  margin-bottom: 12px; line-height: 1.6;
+}
+.promo-links {
+  display: flex; gap: 10px; justify-content: center;
+  flex-wrap: wrap; pointer-events: auto;
+}
+.promo-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 18px; border-radius: 60px;
+  background: rgba(0, 212, 255, 0.15);
+  border: 2px solid var(--cyan);
+  color: var(--cyan); font-size: 12px;
+  font-weight: 900; text-decoration: none;
+  transition: all 0.2s ease;
+}
+.promo-link:hover {
+  background: rgba(0, 212, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
+}
+.promo-link.gold {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: var(--gold); color: var(--gold);
+}
+.promo-link.gold:hover {
+  background: rgba(251, 191, 36, 0.25);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+}
+
+.levels-title {
+  font-size: 16px; font-weight: 900; color: var(--cyan);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+}
+.levels-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px; margin-bottom: 20px;
+}
+.level-card {
+  background: rgba(26, 34, 51, 0.95);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 18px; padding: 16px;
+  cursor: pointer; transition: all 0.3s ease;
+  text-align: center; position: relative;
+}
+.level-card:hover { transform: translateY(-4px); }
+.level-card.locked { opacity: 0.4; cursor: not-allowed; }
+.level-card.locked::after {
+  content: "🔒"; position: absolute;
+  top: 8px; right: 10px; font-size: 18px;
+}
+.level-card.done::after {
+  content: "✓"; position: absolute;
+  top: 8px; right: 10px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--mint); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px;
+}
+.level-card .lvl-emoji { font-size: 32px; margin-bottom: 6px; }
+.level-card .lvl-name { font-size: 13px; font-weight: 900; margin-bottom: 4px; }
+.level-card .lvl-desc {
+  font-size: 10px; color: var(--dim); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.level-card .lvl-progress {
+  height: 5px; background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px; overflow: hidden;
+}
+.level-card .lvl-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
+
+.task-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 14px 20px; margin-bottom: 16px;
+  background: rgba(26, 34, 51, 0.95);
+  border: 2px solid var(--cyan); border-radius: 20px;
+  flex-wrap: wrap;
+}
+.task-level-info { display: flex; align-items: center; gap: 12px; }
+.task-level-icon { font-size: 32px; }
+.task-level-name { font-size: 16px; font-weight: 900; color: var(--cyan); }
+.task-level-step { font-size: 12px; color: var(--dim); font-weight: 700; }
+.task-score { font-size: 16px; font-weight: 900; color: var(--gold); }
+
+.task-card {
+  background: rgba(26, 34, 51, 0.95);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 24px; padding: 24px;
+  margin-bottom: 16px;
+}
+.task-question {
+  font-size: clamp(16px, 2.5vw, 20px); font-weight: 700;
+  line-height: 1.7; margin-bottom: 20px; color: var(--text);
+}
+.task-question strong { color: var(--gold); }
+.task-question em { color: var(--cyan); font-style: normal; font-weight: 900; }
+
+.task-visual {
+  background: rgba(10, 14, 26, 0.6);
+  border: 2px dashed rgba(0, 212, 255, 0.3);
+  border-radius: 16px; padding: 16px;
+  margin-bottom: 20px; display: flex;
+  justify-content: center; flex-wrap: wrap; gap: 12px;
+}
+
+.bar-model {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  justify-content: center; align-items: center;
+}
+.bar-piece {
+  width: 40px; height: 40px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(0, 212, 255, 0.4);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 13px; color: var(--dim);
+}
+.bar-piece.filled {
+  background: linear-gradient(135deg, var(--mint), #059669);
+  border-color: var(--mint); color: #001a22;
+}
+.bar-piece.highlight {
+  background: linear-gradient(135deg, var(--gold), #d97706);
+  border-color: var(--gold); color: #1a0f00;
+}
+
+.options-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-top: 12px;
+}
+@media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+.option {
+  padding: 14px 18px;
+  background: rgba(10, 14, 26, 0.8);
+  border: 2px solid rgba(0, 212, 255, 0.4);
+  border-radius: 14px;
+  font-size: 15px; font-weight: 900; color: var(--text);
+  cursor: pointer; font-family: inherit;
+  transition: all 0.2s ease; text-align: left;
+  display: flex; align-items: center; gap: 10px;
+  min-height: 52px;
+}
+.option:hover { border-color: var(--cyan); background: rgba(0, 212, 255, 0.1); transform: translateX(5px); }
+.option .opt-letter {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(0, 212, 255, 0.3);
+  color: var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 13px; flex-shrink: 0;
+}
+.option.correct {
+  border-color: var(--mint); background: rgba(16, 185, 129, 0.2);
+  color: var(--mint);
+}
+.option.correct .opt-letter { background: var(--mint); color: #001a22; }
+.option.wrong {
+  border-color: var(--coral); background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+.option.wrong .opt-letter { background: var(--coral); color: #fff; }
+.option.disabled { pointer-events: none; opacity: 0.7; }
+
+.feedback {
+  padding: 16px 20px; border-radius: 16px;
+  margin-top: 16px; display: none;
+  font-size: 14px; line-height: 1.6;
+}
+.feedback.show { display: block; animation: fadeIn 0.4s ease; }
+.feedback.correct {
+  background: rgba(16, 185, 129, 0.12);
+  border-left: 5px solid var(--mint); color: #a7f3d0;
+}
+.feedback.wrong {
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 5px solid var(--coral); color: #fca5a5;
+}
+.feedback .fb-title {
+  font-weight: 900; font-size: 15px;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+}
+.feedback .fb-explain { color: var(--text); opacity: 0.9; }
+.feedback .fb-explain strong { color: var(--gold); }
+.feedback .fb-explain code {
+  background: rgba(0, 212, 255, 0.15); color: var(--cyan);
+  padding: 2px 8px; border-radius: 6px;
+  font-family: 'Courier New', monospace; font-weight: 900;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px 24px; border-radius: 60px;
+  font-size: 14px; font-weight: 900; font-family: inherit;
+  border: none; cursor: pointer; transition: all 0.2s ease;
+  letter-spacing: 0.5px; min-height: 48px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan), #0099cc);
+  color: #001a22; box-shadow: 0 4px 0 #006680;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #006680; }
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), #d97706);
+  color: #1a0f00; box-shadow: 0 4px 0 #92400e;
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #92400e; }
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08); color: var(--cyan);
+  border: 2px solid var(--cyan);
+}
+.btn-secondary:hover { background: rgba(0, 212, 255, 0.15); }
+.btn-sm { padding: 8px 16px; font-size: 12px; min-height: 36px; }
+.btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.final-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(251, 191, 36, 0.1));
+  border: 3px solid var(--mint); border-radius: 24px;
+  padding: 32px; text-align: center;
+}
+.final-icon { font-size: 80px; animation: float 3s ease-in-out infinite; }
+.final-title {
+  font-size: clamp(24px, 5vw, 36px); font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--mint));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 16px 0;
+}
+.final-stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px; margin: 20px 0;
+}
+.final-stat {
+  background: rgba(10, 14, 26, 0.6);
+  border-radius: 14px; padding: 14px;
+}
+.final-stat .value { font-size: 28px; font-weight: 900; color: var(--gold); }
+.final-stat .label {
+  font-size: 11px; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 800;
+}
+
+.step-progress { display: flex; gap: 4px; margin-top: 8px; }
+.step-dot {
+  flex: 1; height: 5px; border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.step-dot.done { background: var(--mint); }
+.step-dot.active { background: var(--gold); }
+
+.confetti {
+  position: fixed; pointer-events: none; z-index: 9999;
+  font-size: 24px; animation: confettiFall 2s ease-out forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@media (max-width: 500px) {
+  .container { padding: 12px 12px 55px 12px; }
+  .header { padding: 12px; }
+  .header-icon { font-size: 32px; }
+  .task-card { padding: 16px; }
+  .bar-piece { width: 32px; height: 32px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ФОНОВАЯ РЕКЛАМА -->
+<div class="bg-ad-container">
+  <div class="bg-ad bg-ad-1">
+    <span class="ad-icon">🎓</span>
+    <div class="ad-text">
+      <strong>Мягкая математика</strong><br>
+      Подготовка к ОГЭ и ЕГЭ
+    </div>
+  </div>
+  <div class="bg-ad bg-ad-2">
+    <span class="ad-icon">📚</span>
+    <div class="ad-text">
+      <strong>Сильная началка</strong><br>
+      Олимпиадная математика
+    </div>
+  </div>
+  <div class="bg-ad bg-ad-3">
+    <span class="ad-icon">🚀</span>
+    <div class="ad-text">
+      <strong>Ранний старт</strong><br>
+      Чтение, счёт, письмо
+    </div>
+  </div>
+  <div class="bg-ad bg-ad-4">
+    <span class="ad-icon">💬</span>
+    <div class="ad-text">
+      <strong>Мария Абрамова</strong><br>
+      Основатель школы
+    </div>
+  </div>
+</div>
+
+<!-- ТИКЕР -->
+<div class="ticker">
+  <div class="ticker-content">
+    <span>🎓 Подготовка к ОГЭ и ЕГЭ по математике —</span>
+    <a href="https://vk.com/smartskillsmaria" target="_blank" rel="noopener">vk.com/smartskillsmaria</a>
+    <span>·</span>
+    <span>📚 Олимпиадная математика 1–4 класс —</span>
+    <a href="https://vk.com/smartskillsmaria" target="_blank" rel="noopener">подписаться на группу</a>
+    <span>·</span>
+    <span>💬 Записаться на занятие —</span>
+    <a href="https://vk.com/im/convo/-229273902?entrypoint=community_page&tab=all" target="_blank" rel="noopener">написать Марии Абрамовой</a>
+    <span>·</span>
+    <span>🚀 «Мягкая математика» — учимся без стресса!</span>
+    <span>·</span>
+    <span>🎓 Подготовка к ОГЭ и ЕГЭ по математике —</span>
+    <a href="https://vk.com/smartskillsmaria" target="_blank" rel="noopener">vk.com/smartskillsmaria</a>
+    <span>·</span>
+    <span>📚 Олимпиадная математика 1–4 класс —</span>
+    <a href="https://vk.com/smartskillsmaria" target="_blank" rel="noopener">подписаться на группу</a>
+    <span>·</span>
+    <span>💬 Записаться на занятие —</span>
+    <a href="https://vk.com/im/convo/-229273902?entrypoint=community_page&tab=all" target="_blank" rel="noopener">написать Марии Абрамовой</a>
+    <span>·</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-left">
+      <span class="header-icon">🎯</span>
+      <div>
+        <div class="header-title">ДРОБИ · ТРЕНАЖЁР</div>
+        <div class="header-sub">6 уровней Блума · Ежедневная практика</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat">🪙 <span class="value" id="headerCoins">0</span></div>
+      <div class="stat">🔥 <span class="value" id="headerStreak">0</span></div>
+      <div class="stat">⭐ <span class="value" id="headerTotal">0</span></div>
+    </div>
+  </div>
+
+  <!-- ГЛАВНОЕ МЕНЮ -->
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <h1>ДРОБИ: 6 УРОВНЕЙ</h1>
+      <p>Тренируйся каждый день — от знания к оценке!</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num" id="statToday">0</div>
+          <div class="lbl">Сегодня задач</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" id="statCorrect">0</div>
+          <div class="lbl">Правильных</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" id="statLevel">1</div>
+          <div class="lbl">Уровень</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- РЕКЛАМНЫЙ БЛОК -->
+    <div class="promo-block">
+      <h3>🎁 Хочешь больше практики?</h3>
+      <p>Подписывайся на «Мягкую математику» — там ещё больше тренажёров, задач и олимпиадной подготовки!</p>
+      <div class="promo-links">
+        <a href="https://vk.com/smartskillsmaria" target="_blank" rel="noopener" class="promo-link">
+          📢 Подписаться на группу
+        </a>
+        <a href="https://vk.com/im/convo/-229273902?entrypoint=community_page&tab=all" target="_blank" rel="noopener" class="promo-link gold">
+          💬 Написать Марии
+        </a>
+      </div>
+    </div>
+
+    <div class="levels-title">📚 Уровни Блума</div>
+    <div class="levels-grid" id="levelsGrid"></div>
+
+    <div class="btn-group" style="margin-top: 16px; justify-content: center;">
+      <button type="button" class="btn btn-gold" id="btnRandom">🎲 Случайная задача</button>
+      <button type="button" class="btn btn-secondary" id="btnReset">↺ Сброс прогресса</button>
+    </div>
+  </div>
+
+  <!-- ЭКРАН ЗАДАЧИ -->
+  <div class="screen" id="screen-task">
+    <div class="task-header">
+      <div class="task-level-info">
+        <span class="task-level-icon" id="taskLevelIcon">📖</span>
+        <div>
+          <div class="task-level-name" id="taskLevelName">Знание</div>
+          <div class="task-level-step" id="taskLevelStep">Задача 1 из 5</div>
+        </div>
+      </div>
+      <div class="task-score">🪙 <span id="taskCoins">0</span></div>
+      <button type="button" class="btn btn-sm btn-secondary" id="btnBack">← Меню</button>
+    </div>
+
+    <div class="step-progress" id="stepProgress"></div>
+
+    <div class="task-card">
+      <div class="task-question" id="taskQuestion"></div>
+      <div class="task-visual" id="taskVisual"></div>
+      <div id="taskAnswerArea"></div>
+      <div class="feedback" id="taskFeedback">
+        <div class="fb-title" id="fbTitle"></div>
+        <div class="fb-explain" id="fbExplain"></div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="justify-content: center; margin-top: 16px;">
+      <button type="button" class="btn btn-gold" id="btnNext" style="display: none;">Следующая →</button>
+    </div>
+  </div>
+
+  <!-- ФИНАЛ -->
+  <div class="screen" id="screen-final">
+    <div class="final-card">
+      <div class="final-icon" id="finalIcon">🏆</div>
+      <div class="final-title" id="finalTitle">Уровень пройден!</div>
+      <div class="final-stats">
+        <div class="final-stat">
+          <div class="value" id="finalCorrect">0/5</div>
+          <div class="label">Правильно</div>
+        </div>
+        <div class="final-stat">
+          <div class="value" id="finalCoins">+0</div>
+          <div class="label">Монет</div>
+        </div>
+        <div class="final-stat">
+          <div class="value" id="finalPercent">0%</div>
+          <div class="label">Точность</div>
+        </div>
+      </div>
+      <div class="btn-group" style="justify-content: center;">
+        <button type="button" class="btn btn-gold" id="btnContinue">Продолжить →</button>
+        <button type="button" class="btn btn-secondary" id="btnBackMenu">🏠 Меню</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// УТИЛИТЫ
+// ============================================================
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+function simplify(num, den) {
+  const g = gcd(num, den);
+  return `${num / g}/${den / g}`;
+}
+
+function shuffleOptions(options, correctIdx) {
+  const correctText = options[correctIdx];
+  const shuffled = [...options];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const newCorrectIdx = shuffled.indexOf(correctText);
+  return { options: shuffled, correct: newCorrectIdx };
+}
+
+function makeTask(question, visual, options, correctIdx, explain) {
+  const shuffled = shuffleOptions(options, correctIdx);
+  return {
+    question: question,
+    visual: visual,
+    options: shuffled.options,
+    correct: shuffled.correct,
+    explain: explain
+  };
+}
+
+// ============================================================
+// СОСТОЯНИЕ
+// ============================================================
+const STORAGE_KEY = 'fractions_trainer_v2';
+
+let state = {
+  coins: 0, totalSolved: 0, correctTotal: 0, streak: 0,
+  lastDay: null, todaySolved: 0, todayCorrect: 0,
+  levelsProgress: {
+    1: { completed: 0, total: 5, mastered: false },
+    2: { completed: 0, total: 5, mastered: false },
+    3: { completed: 0, total: 5, mastered: false },
+    4: { completed: 0, total: 5, mastered: false },
+    5: { completed: 0, total: 5, mastered: false },
+    6: { completed: 0, total: 5, mastered: false }
+  },
+  unlockedLevels: [1]
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    }
+  } catch (e) {}
+
+  const today = new Date().toDateString();
+  if (state.lastDay !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (state.lastDay === yesterday) state.streak += 1;
+    else if (state.lastDay !== null) state.streak = 1;
+    else state.streak = 1;
+    state.lastDay = today;
+    state.todaySolved = 0;
+    state.todayCorrect = 0;
+    saveState();
+  }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+// ============================================================
+// УРОВНИ
+// ============================================================
+const LEVELS = [
+  { id: 1, icon: '📖', name: 'Знание', color: '#3b82f6', desc: 'Узнаю и называю' },
+  { id: 2, icon: '💡', name: 'Понимание', color: '#10b981', desc: 'Сравниваю и объясняю' },
+  { id: 3, icon: '🛠️', name: 'Применение', color: '#fbbf24', desc: 'Решаю простые задачи' },
+  { id: 4, icon: '🔍', name: 'Анализ', color: '#ec4899', desc: 'Ищу ошибки, разбираю' },
+  { id: 5, icon: '🎨', name: 'Синтез', color: '#a855f7', desc: 'Соединяю и придумываю' },
+  { id: 6, icon: '🏆', name: 'Оценка', color: '#ef4444', desc: 'Оцениваю и доказываю' }
+];
+
+function barVisual(den, filledCount, highlightCount = 0) {
+  let html = '<div class="bar-model">';
+  for (let i = 0; i < den; i++) {
+    let cls = 'bar-piece';
+    if (i < filledCount - highlightCount) cls += ' filled';
+    else if (i < filledCount) cls += ' highlight';
+    html += `<div class="${cls}">${i + 1}</div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+// ГЕНЕРАТОРЫ ЗАДАЧ
+// ============================================================
+function generateLevel1() {
+  const type = randInt(1, 3);
+  if (type === 1) {
+    const den = randInt(3, 12); const num = randInt(1, den - 1);
+    return makeTask(
+      `В дроби <em>${num}/${den}</em> — что показывает <strong>знаменатель</strong> (число ${den})?`,
+      barVisual(den, num),
+      ['На сколько частей разделили целое', 'Сколько частей взяли', 'Сколько всего целых', 'Какое число больше'],
+      0,
+      `Знаменатель — <strong>на сколько частей разделили целое</strong>. У нас ${den} частей.<br>Числитель ${num} — сколько частей взяли.`
+    );
+  }
+  if (type === 2) {
+    const den = randInt(3, 12); const num = randInt(1, den - 1);
+    return makeTask(
+      `В дроби <em>${num}/${den}</em> — что показывает <strong>числитель</strong> (число ${num})?`,
+      barVisual(den, num),
+      ['Сколько частей взяли', 'На сколько частей разделили', 'Сколько всего единиц', 'Какая часть осталась'],
+      0,
+      `Числитель — <strong>сколько частей взяли</strong>. У нас ${num} из ${den} частей.`
+    );
+  }
+  const den = randInt(3, 8); const num = randInt(1, den - 1);
+  return makeTask(
+    `Какая дробь изображена на рисунке?`,
+    barVisual(den, num),
+    [`${num}/${den}`, `${den}/${num}`, `${num + 1}/${den}`, `${num}/${den + 1}`],
+    0,
+    `Целое разделено на <strong>${den} частей</strong>, закрашено <strong>${num}</strong>. Значит, дробь <code>${num}/${den}</code>.`
+  );
+}
+
+function generateLevel2() {
+  const type = randInt(1, 3);
+  if (type === 1) {
+    const den = randInt(4, 12);
+    let a = randInt(1, den - 1); let b = randInt(1, den - 1);
+    while (a === b) b = randInt(1, den - 1);
+    const bigger = a > b ? a : b; const smaller = a > b ? b : a;
+    return makeTask(
+      `Какая дробь <strong>больше</strong>: <em>${smaller}/${den}</em> или <em>${bigger}/${den}</em>?`,
+      barVisual(den, bigger),
+      [`${bigger}/${den}`, `${smaller}/${den}`, 'Они равны', 'Нельзя сравнить'],
+      0,
+      `Знаменатели одинаковые — сравниваем числители. <strong>${bigger} > ${smaller}</strong>.`
+    );
+  }
+  if (type === 2) {
+    const pairs = [
+      { frac: '1/2', dec: '0,5' }, { frac: '1/4', dec: '0,25' },
+      { frac: '3/4', dec: '0,75' }, { frac: '1/5', dec: '0,2' },
+      { frac: '2/5', dec: '0,4' }, { frac: '1/10', dec: '0,1' }
+    ];
+    const pair = pairs[randInt(0, pairs.length - 1)];
+    const wrong1 = ['0,3', '0,6', '0,8', '0,15', '0,45', '0,05'][randInt(0, 5)];
+    let wrong2 = ['0,3', '0,6', '0,8', '0,15', '0,45', '0,05'][randInt(0, 5)];
+    while (wrong2 === wrong1) wrong2 = ['0,3', '0,6', '0,8', '0,15', '0,45', '0,05'][randInt(0, 5)];
+    return makeTask(
+      `Переведи дробь <em>${pair.frac}</em> в десятичную:`,
+      '',
+      [pair.dec, wrong1, wrong2, '0,99'],
+      0,
+      `Дробь <code>${pair.frac}</code> = <code>${pair.dec}</code>.`
+    );
+  }
+  const den = randInt(2, 6); const num = randInt(1, den - 1); const mult = randInt(2, 4);
+  return makeTask(
+    `Какая дробь равна <em>${num}/${den}</em>?`,
+    '',
+    [`${num * mult}/${den * mult}`, `${num + 1}/${den + 1}`, `${num * 2}/${den}`, `${den}/${num}`],
+    0,
+    `Умножаем числитель и знаменатель на ${mult}: <code>${num * mult}/${den * mult}</code>.`
+  );
+}
+
+function generateLevel3() {
+  const type = randInt(1, 4);
+  if (type === 1) {
+    const den = randInt(5, 12); const a = randInt(1, den - 2); const b = randInt(1, den - a);
+    const sum = a + b;
+    return makeTask(
+      `Вычисли: <em>${a}/${den} + ${b}/${den}</em>`,
+      barVisual(den, sum),
+      [`${sum}/${den}`, `${sum}/${den + den}`, `${a * b}/${den}`, `${sum}/${den * 2}`],
+      0,
+      `Знаменатели одинаковые — складываем числители: <code>${a} + ${b} = ${sum}</code>.`
+    );
+  }
+  if (type === 2) {
+    const den = randInt(5, 12); const a = randInt(3, den); const b = randInt(1, a - 1);
+    const diff = a - b;
+    return makeTask(
+      `Вычисли: <em>${a}/${den} − ${b}/${den}</em>`,
+      barVisual(den, a, b),
+      [`${diff}/${den}`, `${a + b}/${den}`, `${b - a}/${den}`, `${diff}/${den - b}`],
+      0,
+      `Вычитаем числители: <code>${a} − ${b} = ${diff}</code>.`
+    );
+  }
+  if (type === 3) {
+    const dens = [2, 3, 4, 5, 6, 8, 10];
+    const den = dens[randInt(0, dens.length - 1)];
+    const num = randInt(1, den - 1);
+    const whole = den * randInt(2, 12);
+    const answer = (whole / den) * num;
+    return makeTask(
+      `Найди <em>${num}/${den}</em> от числа <strong>${whole}</strong>.`,
+      '',
+      [`${answer}`, `${answer + den}`, `${answer - num}`, `${whole - answer}`],
+      0,
+      `Делим целое на знаменатель: <code>${whole} ÷ ${den} = ${whole / den}</code>.<br>Умножаем на числитель: <code>${whole / den} × ${num} = ${answer}</code>.`
+    );
+  }
+  const baseNum = randInt(1, 5); const baseDen = randInt(baseNum + 1, 8); const mult = randInt(2, 5);
+  const num = baseNum * mult; const den = baseDen * mult;
+  return makeTask(
+    `Сократи дробь: <em>${num}/${den}</em>`,
+    '',
+    [`${baseNum}/${baseDen}`, `${baseNum + 1}/${baseDen + 1}`, `${num}/${den}`, `${baseNum * 2}/${baseDen * 2}`],
+    0,
+    `НОД(${num}, ${den}) = ${mult}. Делим: <code>${num}÷${mult}/${den}÷${mult} = ${baseNum}/${baseDen}</code>.`
+  );
+}
+
+function generateLevel4() {
+  const type = randInt(1, 3);
+  if (type === 1) {
+    const den = randInt(5, 10); const a = randInt(1, den - 2); const b = randInt(1, den - a);
+    const correctSum = a + b; const wrongSum = a + b + 1;
+    return makeTask(
+      `Ученик решил: <em>${a}/${den} + ${b}/${den} = ${wrongSum}/${den + den}</em>. В чём ошибка?`,
+      '',
+      ['Он сложил знаменатели — а нужно только числители', 'Он забыл про целое', 'Он умножил вместо сложения', 'Ошибки нет'],
+      0,
+      `Знаменатели <strong>не складываются</strong>! Правильно: <code>${a} + ${b} = ${correctSum}</code>, знаменатель <code>${den}</code>.<br>Верный ответ: <code>${correctSum}/${den}</code>.`
+    );
+  }
+  if (type === 2) {
+    const d1 = randInt(2, 6); const d2 = randInt(2, 6);
+    if (d1 === d2) return generateLevel4();
+    const n1 = randInt(1, d1 - 1); const n2 = randInt(1, d2 - 1);
+    const v1 = n1 / d1; const v2 = n2 / d2;
+    if (v1 === v2) return generateLevel4();
+    const correctIdx = v1 > v2 ? 0 : 1;
+    return makeTask(
+      `Какая дробь больше: <em>${n1}/${d1}</em> или <em>${n2}/${d2}</em>?`,
+      '',
+      [`${n1}/${d1}`, `${n2}/${d2}`, 'Они равны', 'Нельзя сравнить'],
+      correctIdx,
+      `Приведём к общему знаменателю: <code>${n1 * d2}</code> и <code>${n2 * d1}</code>.`
+    );
+  }
+  const den = randInt(4, 8); const num = randInt(2, den - 1);
+  return makeTask(
+    `Дробь <em>${num}/${den}</em> — это сколько частей по <em>1/${den}</em>?`,
+    barVisual(den, num),
+    [`${num}`, `${den}`, `${num + den}`, `${den - num}`],
+    0,
+    `Дробь <code>${num}/${den}</code> = ${num} раз по <code>1/${den}</code>.`
+  );
+}
+
+function generateLevel5() {
+  const type = randInt(1, 3);
+  if (type === 1) {
+    const d1 = randInt(2, 6); const d2 = randInt(2, 6);
+    if (d1 === d2) return generateLevel5();
+    const n1 = randInt(1, d1 - 1); const n2 = randInt(1, d2 - 1);
+    const commonDen = (d1 * d2) / gcd(d1, d2);
+    const newN1 = n1 * (commonDen / d1); const newN2 = n2 * (commonDen / d2);
+    const sumN = newN1 + newN2;
+    const simplified = simplify(sumN, commonDen);
+    return makeTask(
+      `Вычисли: <em>${n1}/${d1} + ${n2}/${d2}</em>`,
+      '',
+      [`${simplified}`, `${n1 + n2}/${d1 + d2}`, `${sumN}/${commonDen * 2}`, `${n1 * n2}/${d1 * d2}`],
+      0,
+      `Общий знаменатель: <code>${commonDen}</code>. Складываем: <code>${sumN}/${commonDen}</code> = <code>${simplified}</code>.`
+    );
+  }
+  if (type === 2) {
+    const dens = [2, 3, 4, 5, 6];
+    const den = dens[randInt(0, dens.length - 1)];
+    const num = randInt(1, den - 1);
+    const part = den * randInt(2, 8);
+    const whole = (part / num) * den;
+    return makeTask(
+      `<em>${num}/${den}</em> числа равны <strong>${part}</strong>. Найди это число.`,
+      '',
+      [`${whole}`, `${part + den}`, `${part * num}`, `${part - num}`],
+      0,
+      `Одна часть: <code>${part} ÷ ${num} = ${part / num}</code>.<br>Всё: <code>${part / num} × ${den} = ${whole}</code>.`
+    );
+  }
+  const whole = randInt(1, 3); const den = randInt(3, 6); const num = randInt(1, den - 1);
+  const total = whole * den + num;
+  return makeTask(
+    `Запиши неправильную дробь <em>${total}/${den}</em> как смешанное число:`,
+    barVisual(den, num),
+    [`${whole} ${num}/${den}`, `${whole + 1} ${num}/${den}`, `${whole} ${den}/${num}`, `${num} ${whole}/${den}`],
+    0,
+    `Делим: <code>${total} ÷ ${den} = ${whole}</code> (ост. ${num}). Значит, <code>${whole} ${num}/${den}</code>.`
+  );
+}
+
+function generateLevel6() {
+  const type = randInt(1, 3);
+  if (type === 1) {
+    const d1 = randInt(3, 6); const d2 = randInt(2, 5);
+    const n1 = randInt(1, d1 - 1); const n2 = randInt(1, d2 - 1);
+    return makeTask(
+      `Чтобы сложить <em>${n1}/${d1}</em> и <em>${n2}/${d2}</em> — какой способ <strong>лучше</strong>?`,
+      '',
+      ['Привести к общему знаменателю — универсальный способ', 'Сложить числители и знаменатели отдельно', 'Просто сложить числа как есть', 'Умножить всё на 2'],
+      0,
+      `Нужно <strong>привести к общему знаменателю</strong> — это даст верный результат.`
+    );
+  }
+  if (type === 2) {
+    const den = randInt(4, 8); const a = randInt(2, den - 1); const b = randInt(2, den - 1);
+    const sum = a + b;
+    const options = sum >= den
+      ? ['Нет — нужно выделить целую часть', 'Да, всё верно', 'Нет, знаменатели надо сложить', 'Да, но надо сократить']
+      : ['Да, всё верно', 'Нет — нужно выделить целую часть', 'Нет, знаменатели надо сложить', 'Ответ неверный'];
+    return makeTask(
+      `Результат: <em>${a}/${den} + ${b}/${den}</em> = <strong>${sum}/${den}</strong>. Можно оставить так?`,
+      '',
+      options,
+      0,
+      sum >= den
+        ? `Неправильная дробь (числитель ≥ знаменателя). Нужно выделить целое: <code>${Math.floor(sum / den)} ${sum % den}/${den}</code>.`
+        : `Правильная дробь (числитель < знаменателя). Можно оставить так.`
+    );
+  }
+  const den = randInt(4, 8); const a = randInt(1, den - 2); const b = randInt(1, den - a);
+  return makeTask(
+    `Почему при сложении <em>${a}/${den}</em> и <em>${b}/${den}</em> знаменатель НЕ меняется?`,
+    barVisual(den, a + b),
+    ['Потому что части одного размера — мы просто считаем, сколько их', 'Потому что так короче писать', 'Потому что знаменатели всегда одинаковые', 'Потому что 1 + 1 = 2'],
+    0,
+    `Знаменатель показывает <strong>размер части</strong>. Мы не меняем размер — считаем <strong>количество частей</strong>.`
+  );
+}
+
+function generateTask(levelId) {
+  if (levelId === 1) return generateLevel1();
+  if (levelId === 2) return generateLevel2();
+  if (levelId === 3) return generateLevel3();
+  if (levelId === 4) return generateLevel4();
+  if (levelId === 5) return generateLevel5();
+  return generateLevel6();
+}
+
+// ============================================================
+// СЕССИЯ
+// ============================================================
+let currentSession = {
+  levelId: 1, taskIndex: 0, correct: 0, total: 5,
+  currentTask: null, answered: false, coinsEarned: 0
+};
+
+function renderHome() {
+  document.getElementById('headerCoins').textContent = state.coins;
+  document.getElementById('headerStreak').textContent = state.streak;
+  document.getElementById('headerTotal').textContent = state.totalSolved;
+  document.getElementById('statToday').textContent = state.todaySolved;
+  document.getElementById('statCorrect').textContent = state.todayCorrect;
+  document.getElementById('statLevel').textContent = state.unlockedLevels.length;
+
+  const grid = document.getElementById('levelsGrid');
+  grid.innerHTML = '';
+
+  LEVELS.forEach(lvl => {
+    const prog = state.levelsProgress[lvl.id];
+    const isUnlocked = state.unlockedLevels.includes(lvl.id);
+    const pct = prog.total > 0 ? (prog.completed / prog.total) * 100 : 0;
+
+    const card = document.createElement('div');
+    card.className = 'level-card';
+    if (!isUnlocked) card.classList.add('locked');
+    if (prog.mastered) card.classList.add('done');
+
+    card.innerHTML = `
+      <div class="lvl-emoji">${lvl.icon}</div>
+      <div class="lvl-name" style="color: ${lvl.color};">${lvl.id}. ${lvl.name}</div>
+      <div class="lvl-desc">${lvl.desc}</div>
+      <div class="lvl-progress">
+        <div class="lvl-fill" style="width: ${pct}%; background: ${lvl.color};"></div>
+      </div>
+    `;
+
+    if (isUnlocked) card.addEventListener('click', () => startLevel(lvl.id));
+    grid.appendChild(card);
+  });
+}
+
+function startLevel(levelId) {
+  currentSession = {
+    levelId: levelId, taskIndex: 0, correct: 0, total: 5,
+    currentTask: null, answered: false, coinsEarned: 0
+  };
+  switchScreen('screen-task');
+  loadTask();
+}
+
+function loadTask() {
+  const lvl = LEVELS.find(l => l.id === currentSession.levelId);
+  document.getElementById('taskLevelIcon').textContent = lvl.icon;
+  document.getElementById('taskLevelName').textContent = lvl.name;
+  document.getElementById('taskLevelName').style.color = lvl.color;
+  document.getElementById('taskLevelStep').textContent = `Задача ${currentSession.taskIndex + 1} из ${currentSession.total}`;
+  document.getElementById('taskCoins').textContent = currentSession.coinsEarned;
+
+  const progWrap = document.getElementById('stepProgress');
+  progWrap.innerHTML = '';
+  for (let i = 0; i < currentSession.total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot';
+    if (i < currentSession.taskIndex) dot.classList.add('done');
+    if (i === currentSession.taskIndex) dot.classList.add('active');
+    progWrap.appendChild(dot);
+  }
+
+  currentSession.currentTask = generateTask(currentSession.levelId);
+  currentSession.answered = false;
+
+  document.getElementById('taskQuestion').innerHTML = currentSession.currentTask.question;
+
+  const visual = document.getElementById('taskVisual');
+  if (currentSession.currentTask.visual) {
+    visual.innerHTML = currentSession.currentTask.visual;
+    visual.style.display = 'flex';
+  } else {
+    visual.innerHTML = '';
+    visual.style.display = 'none';
+  }
+
+  const answerArea = document.getElementById('taskAnswerArea');
+  answerArea.innerHTML = '';
+  const optWrap = document.createElement('div');
+  optWrap.className = 'options-grid';
+  currentSession.currentTask.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option';
+    btn.innerHTML = `<span class="opt-letter">${String.fromCharCode(65 + i)}</span><span>${opt}</span>`;
+    btn.addEventListener('click', () => checkAnswer(i, btn, optWrap));
+    optWrap.appendChild(btn);
+  });
+  answerArea.appendChild(optWrap);
+
+  document.getElementById('btnNext').style.display = 'none';
+  document.getElementById('taskFeedback').classList.remove('show');
+}
+
+function checkAnswer(selectedIdx, btn, optWrap) {
+  if (currentSession.answered) return;
+  currentSession.answered = true;
+
+  const task = currentSession.currentTask;
+  const isCorrect = selectedIdx === task.correct;
+
+  optWrap.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    currentSession.correct += 1;
+    currentSession.coinsEarned += 10;
+    state.coins += 10;
+    state.todayCorrect += 1;
+    state.correctTotal += 1;
+    showFeedback(true, task.explain);
+    spawnConfetti(8);
+  } else {
+    btn.classList.add('wrong');
+    optWrap.querySelectorAll('.option')[task.correct].classList.add('correct');
+    showFeedback(false, task.explain);
+    document.body.style.animation = 'shake 0.4s';
+    setTimeout(() => document.body.style.animation = '', 400);
+  }
+
+  state.todaySolved += 1;
+  state.totalSolved += 1;
+  saveState();
+
+  document.getElementById('taskCoins').textContent = currentSession.coinsEarned;
+  document.getElementById('headerCoins').textContent = state.coins;
+
+  document.getElementById('btnNext').style.display = 'inline-flex';
+  document.getElementById('btnNext').textContent = currentSession.taskIndex + 1 >= currentSession.total ? 'Завершить →' : 'Следующая →';
+}
+
+function showFeedback(isCorrect, explain) {
+  const fb = document.getElementById('taskFeedback');
+  fb.className = 'feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  document.getElementById('fbTitle').textContent = isCorrect ? '✅ Правильно!' : '❌ Не совсем...';
+  document.getElementById('fbExplain').innerHTML = explain;
+}
+
+function nextTask() {
+  currentSession.taskIndex += 1;
+  if (currentSession.taskIndex >= currentSession.total) finishLevel();
+  else loadTask();
+}
+
+function finishLevel() {
+  const pct = Math.round((currentSession.correct / currentSession.total) * 100);
+  const isMastered = pct >= 80;
+
+  const prog = state.levelsProgress[currentSession.levelId];
+  prog.completed = Math.max(prog.completed, currentSession.total);
+  if (isMastered) prog.mastered = true;
+
+  const nextLevelId = currentSession.levelId + 1;
+  if (isMastered && nextLevelId <= LEVELS.length && !state.unlockedLevels.includes(nextLevelId)) {
+    state.unlockedLevels.push(nextLevelId);
+  }
+
+  if (isMastered) {
+    state.coins += 20;
+    currentSession.coinsEarned += 20;
+  }
+
+  saveState();
+
+  document.getElementById('finalIcon').textContent = isMastered ? '🏆' : '💪';
+  document.getElementById('finalTitle').textContent = isMastered
+    ? `Уровень «${LEVELS.find(l => l.id === currentSession.levelId).name}» пройден!`
+    : 'Почти получилось!';
+  document.getElementById('finalCorrect').textContent = `${currentSession.correct}/${currentSession.total}`;
+  document.getElementById('finalCoins').textContent = `+${currentSession.coinsEarned}`;
+  document.getElementById('finalPercent').textContent = `${pct}%`;
+
+  document.getElementById('btnContinue').textContent = isMastered && nextLevelId <= LEVELS.length
+    ? `Уровень ${nextLevelId} →`
+    : 'Ещё раз';
+
+  switchScreen('screen-final');
+  if (isMastered) spawnConfetti(40);
+}
+
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function spawnConfetti(count) {
+  count = count || 20;
+  const emojis = ['✨', '⭐', '🌟', '💫', '🎉', '🏆', '🍕'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.top = '-30px';
+    el.style.animationDelay = Math.random() * 0.5 + 's';
+    el.style.fontSize = (Math.random() * 20 + 16) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
+  }
+}
+
+document.getElementById('btnNext').addEventListener('click', nextTask);
+document.getElementById('btnBack').addEventListener('click', () => {
+  renderHome();
+  switchScreen('screen-home');
+});
+document.getElementById('btnBackMenu').addEventListener('click', () => {
+  renderHome();
+  switchScreen('screen-home');
+});
+document.getElementById('btnContinue').addEventListener('click', () => {
+  const pct = Math.round((currentSession.correct / currentSession.total) * 100);
+  const isMastered = pct >= 80;
+  const nextId = currentSession.levelId + 1;
+  if (isMastered && nextId <= LEVELS.length) startLevel(nextId);
+  else startLevel(currentSession.levelId);
+});
+document.getElementById('btnRandom').addEventListener('click', () => {
+  const available = state.unlockedLevels;
+  const levelId = available[Math.floor(Math.random() * available.length)];
+  startLevel(levelId);
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (confirm('Сбросить весь прогресс?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+});
+
+loadState();
+renderHome();
+
+console.log('%c🎯 Тренажёр «Дроби» с рекламой загружен!', 'color:#00d4ff;font-size:16px;font-weight:bold');
+console.log('%c🔀 Ответы перемешиваются · 📢 Реклама «Мягкой математики»', 'color:#ec4899;font-size:13px');
+</script>
+</body>
+</html>
